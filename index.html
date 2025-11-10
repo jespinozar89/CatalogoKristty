@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Producto - Plantilla</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .image-gallery {
+            background: #f8f9fa;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-container {
+            width: 100%;
+            height: 240px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 15px;
+            background: white;
+        }
+
+        .main-image {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .main-image:hover {
+            transform: scale(1.05);
+        }
+
+        .thumbnail {
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .thumbnail:hover {
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+
+        .product-info {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .product-title {
+            font-size: 2rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .product-description {
+            font-size: 1rem;
+            color: #4a5568;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .price-section {
+            margin-bottom: 30px;
+        }
+
+        .price-label {
+            font-size: 0.9rem;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .price {
+            font-size: 2.5rem;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .contact-section {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 10px;
+        }
+
+        .contact-title {
+            font-size: 1rem;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin-bottom: 10px;
+            background: white;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .contact-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .whatsapp-icon {
+            background: #25D366;
+        }
+
+        .gmail-icon {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-text {
+            font-size: 0.95rem;
+            color: #4a5568;
+            text-decoration: none;
+        }
+
+        .contact-item a {
+            text-decoration: none;
+            color: #4a5568;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .controls-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 30px;
+        }
+
+        .controls-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 0.9rem;
+            color: #4a5568;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea.text-input {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .buttons-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .upload-btn, .screenshot-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .upload-btn:hover, .screenshot-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .screenshot-btn {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .screenshot-btn:hover {
+            box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .product-card {
+                grid-template-columns: 1fr;
+            }
+
+            .image-gallery {
+                padding: 20px;
+            }
+
+            .main-image {
+                height: 250px;
+            }
+
+            .thumbnail {
+                height: 100px;
+            }
+
+            .product-info {
+                padding: 30px 20px;
+            }
+
+            .product-title {
+                font-size: 1.5rem;
+            }
+
+            .price {
+                font-size: 2rem;
+            }
+
+            .controls-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="product-card" id="productCard">
+        <div class="image-gallery">
+            <div class="image-container">
+                <img src="" 
+                     alt="" 
+                     class="main-image" 
+                     id="mainImage">
+            </div>
+            <div class="image-container">
+                <img src="" 
+                     alt="" 
+                     class="thumbnail"
+                     id="thumbnail"
+                     onclick="changeImage(this.src)">
+            </div>
+        </div>
+
+        <div class="product-info">
+            <h1 class="product-title">Audífonos Premium</h1>
+            
+            <p class="product-description">
+                Experimenta un sonido excepcional con nuestros audífonos premium de última generación. 
+                Diseñados con tecnología de cancelación de ruido activa y materiales de alta calidad 
+                para brindarte la mejor experiencia de audio. Perfectos para música, llamadas y 
+                entretenimiento.
+            </p>
+
+            <div class="price-section">
+                <div class="price-label">Precio</div>
+                <div class="price">$89.990</div>
+            </div>
+
+            <div class="contact-section">
+                <div class="contact-title">Contacto</div>
+                
+                <div class="contact-item">
+                    <a href="https://wa.me/56991494622" target="_blank">
+                        <div class="contact-icon whatsapp-icon">
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="white">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                            </svg>
+                        </div>
+                        <div class="contact-text">+569 9149 4622</div>
+                    </a>
+                </div>
+
+                <div class="contact-item">
+                    <a href="mailto:Kristty.Vicencio2929@gmail.com">
+                        <div class="contact-icon gmail-icon">
+                            <svg viewBox="0 0 256 193" width="24" height="18">
+                                <path fill="#4285F4" d="M58.182 192.05V93.14L27.507 65.077L0 49.504v125.091c0 9.658 7.825 17.455 17.455 17.455h40.727z"/>
+                                <path fill="#34A853" d="M197.818 192.05h40.727c9.659 0 17.455-7.826 17.455-17.455V49.504l-31.156 17.837l-27.026 25.798v98.91z"/>
+                                <path fill="#EA4335" d="M58.182 93.14l-4.174-38.647l4.174-36.989L128 69.868l69.818-52.364l4.669 34.992l-4.669 40.644L128 145.504z"/>
+                                <path fill="#FBBC04" d="M197.818 17.504V93.14L256 49.504V26.231c0-21.585-24.64-33.89-41.89-20.945l-16.292 12.218z"/>
+                                <path fill="#C5221F" d="M0 49.504l26.759 20.07L58.182 93.14V17.504L41.89 5.286C24.61-7.66 0 4.646 0 26.23v23.274z"/>
+                            </svg>
+                        </div>
+                        <div class="contact-text">Kristty.Vicencio2929@gmail.com</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls-container">
+        <div class="controls-section">
+            <span class="section-title">✏️ Editar Información del Producto</span>
+            
+            <div class="input-group">
+                <label class="input-label">Título del Producto</label>
+                <input type="text" id="titleInput" class="text-input" value="Audífonos Premium" onchange="updateTitle()">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Descripción</label>
+                <textarea id="descriptionInput" class="text-input" onchange="updateDescription()">Experimenta un sonido excepcional con nuestros audífonos premium de última generación. Diseñados con tecnología de cancelación de ruido activa y materiales de alta calidad para brindarte la mejor experiencia de audio. Perfectos para música, llamadas y entretenimiento.</textarea>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Precio</label>
+                <input type="text" id="priceInput" class="text-input" value="$89.990" onchange="updatePrice()">
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <span class="section-title">📁 Subir Imágenes</span>
+            <input type="file" id="image1" accept="image/*" onchange="loadImage(this, 'mainImage')" style="display: none;">
+            <input type="file" id="image2" accept="image/*" onchange="loadImage(this, 'thumbnail')" style="display: none;">
+            
+            <div class="buttons-group">
+                <button onclick="document.getElementById('image1').click()" class="upload-btn">
+                    📷 Subir Imagen Principal
+                </button>
+                
+                <button onclick="document.getElementById('image2').click()" class="upload-btn">
+                    🖼️ Subir Imagen Secundaria
+                </button>
+                
+                <button onclick="captureScreenshot()" class="screenshot-btn">
+                    📸 Captura de Pantalla
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function changeImage(src) {
+            if (src) {
+                document.getElementById('mainImage').src = src;
+            }
+        }
+
+        function loadImage(input, targetId) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const img = document.getElementById(targetId);
+                    img.src = e.target.result;
+                    if (targetId === 'mainImage' && !document.getElementById('thumbnail').src) {
+                        document.getElementById('thumbnail').src = e.target.result;
+                    }
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function updateTitle() {
+            const title = document.getElementById('titleInput').value;
+            document.querySelector('.product-title').textContent = title;
+        }
+
+        function updateDescription() {
+            const description = document.getElementById('descriptionInput').value;
+            document.querySelector('.product-description').textContent = description;
+        }
+
+        function updatePrice() {
+            const price = document.getElementById('priceInput').value;
+            document.querySelector('.price').textContent = price;
+        }
+
+        function captureScreenshot() {
+            const element = document.getElementById('productCard');
+            
+            html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: '#ffffff',
+                logging: false,
+                windowWidth: element.scrollWidth,
+                windowHeight: element.scrollHeight
+            }).then(canvas => {
+                // Crear un canvas más grande que incluya el fondo
+                const finalCanvas = document.createElement('canvas');
+                const ctx = finalCanvas.getContext('2d');
+                
+                // Añadir padding alrededor
+                const padding = 40;
+                finalCanvas.width = canvas.width + (padding * 2);
+                finalCanvas.height = canvas.height + (padding * 2);
+                
+                // Dibujar el gradiente de fondo
+                const gradient = ctx.createLinearGradient(0, 0, finalCanvas.width, finalCanvas.height);
+                gradient.addColorStop(0, '#667eea');
+                gradient.addColorStop(1, '#764ba2');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+                
+                // Dibujar la tarjeta del producto centrada
+                ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                ctx.shadowBlur = 60;
+                ctx.shadowOffsetX = 0;
+                ctx.shadowOffsetY = 20;
+                ctx.drawImage(canvas, padding, padding);
+                
+                // Descargar la imagen
+                const link = document.createElement('a');
+                link.download = 'producto-' + Date.now() + '.png';
+                link.href = finalCanvas.toDataURL('image/png');
+                link.click();
+            });
+        }
+    </script>
+</body>
+</html>
