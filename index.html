@@ -481,17 +481,34 @@
                 
                 // Añadir padding alrededor
                 const padding = 40;
+                const borderRadius = 30;
                 finalCanvas.width = canvas.width + (padding * 2);
                 finalCanvas.height = canvas.height + (padding * 2);
+                
+                // Crear un rectángulo redondeado para el fondo
+                ctx.beginPath();
+                ctx.moveTo(borderRadius, 0);
+                ctx.lineTo(finalCanvas.width - borderRadius, 0);
+                ctx.quadraticCurveTo(finalCanvas.width, 0, finalCanvas.width, borderRadius);
+                ctx.lineTo(finalCanvas.width, finalCanvas.height - borderRadius);
+                ctx.quadraticCurveTo(finalCanvas.width, finalCanvas.height, finalCanvas.width - borderRadius, finalCanvas.height);
+                ctx.lineTo(borderRadius, finalCanvas.height);
+                ctx.quadraticCurveTo(0, finalCanvas.height, 0, finalCanvas.height - borderRadius);
+                ctx.lineTo(0, borderRadius);
+                ctx.quadraticCurveTo(0, 0, borderRadius, 0);
+                ctx.closePath();
+                
+                // Recortar para que todo lo que dibujemos esté dentro del rectángulo redondeado
+                ctx.clip();
                 
                 // Dibujar el gradiente de fondo
                 const gradient = ctx.createLinearGradient(0, 0, finalCanvas.width, finalCanvas.height);
                 gradient.addColorStop(0, '#667eea');
                 gradient.addColorStop(1, '#764ba2');
                 ctx.fillStyle = gradient;
-                ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+                ctx.fill();
                 
-                // Dibujar la tarjeta del producto centrada
+                // Dibujar la tarjeta del producto centrada con sombra
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
                 ctx.shadowBlur = 60;
                 ctx.shadowOffsetX = 0;
