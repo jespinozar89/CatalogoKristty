@@ -50,6 +50,14 @@
             justify-content: center;
         }
 
+        .image-gallery.single-image {
+            justify-content: center;
+        }
+
+        .image-gallery.single-image .image-container:last-child {
+            display: none;
+        }
+
         .image-container {
             width: 100%;
             height: 240px;
@@ -59,6 +67,14 @@
             overflow: hidden;
             border-radius: 15px;
             background: white;
+        }
+
+        .image-container.horizontal {
+            height: 180px;
+        }
+
+        .image-container.vertical {
+            height: 300px;
         }
 
         .main-image {
@@ -262,6 +278,40 @@
             justify-content: center;
         }
 
+        .toggle-images {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .orientation-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            flex: 1;
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .toggle-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+
+        .toggle-btn:hover {
+            border-color: #667eea;
+        }
+
         .upload-btn, .screenshot-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -325,13 +375,13 @@
 <body>
     <div class="product-card" id="productCard">
         <div class="image-gallery">
-            <div class="image-container">
+            <div class="image-container" id="imageContainer1">
                 <img src="" 
                      alt="" 
                      class="main-image" 
                      id="mainImage">
             </div>
-            <div class="image-container">
+            <div class="image-container" id="imageContainer2">
                 <img src="" 
                      alt="" 
                      class="thumbnail"
@@ -408,7 +458,19 @@
         </div>
 
         <div class="controls-section">
-            <span class="section-title">📁 Subir Imágenes</span>
+            <span class="section-title">📁 Configurar Imágenes</span>
+            
+            <div class="toggle-images">
+                <button class="toggle-btn active" onclick="toggleImageMode(1)">1 Imagen</button>
+                <button class="toggle-btn" onclick="toggleImageMode(2)">2 Imágenes</button>
+            </div>
+
+            <div class="orientation-toggle">
+                <button class="toggle-btn" onclick="toggleOrientation('horizontal')">📱 Horizontal</button>
+                <button class="toggle-btn active" onclick="toggleOrientation('auto')">🔄 Auto</button>
+                <button class="toggle-btn" onclick="toggleOrientation('vertical')">📲 Vertical</button>
+            </div>
+
             <input type="file" id="image1" accept="image/*" onchange="loadImage(this, 'mainImage')" style="display: none;">
             <input type="file" id="image2" accept="image/*" onchange="loadImage(this, 'thumbnail')" style="display: none;">
             
@@ -417,7 +479,7 @@
                     📷 Subir Imagen Principal
                 </button>
                 
-                <button onclick="document.getElementById('image2').click()" class="upload-btn">
+                <button onclick="document.getElementById('image2').click()" class="upload-btn" id="secondImageBtn">
                     🖼️ Subir Imagen Secundaria
                 </button>
                 
@@ -429,6 +491,66 @@
     </div>
 
     <script>
+        let imageMode = 1;
+        let imageOrientation = 'auto';
+
+        function toggleImageMode(mode) {
+            imageMode = mode;
+            const gallery = document.querySelector('.image-gallery');
+            const buttons = document.querySelectorAll('.toggle-images .toggle-btn');
+            const secondImageBtn = document.getElementById('secondImageBtn');
+            
+            // Actualizar botones activos
+            buttons.forEach((btn, index) => {
+                if (index + 1 === mode) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Mostrar/ocultar segunda imagen
+            if (mode === 1) {
+                gallery.classList.add('single-image');
+                secondImageBtn.style.opacity = '0.5';
+                secondImageBtn.style.pointerEvents = 'none';
+            } else {
+                gallery.classList.remove('single-image');
+                secondImageBtn.style.opacity = '1';
+                secondImageBtn.style.pointerEvents = 'auto';
+            }
+        }
+
+        function toggleOrientation(orientation) {
+            imageOrientation = orientation;
+            const buttons = document.querySelectorAll('.orientation-toggle .toggle-btn');
+            const containers = document.querySelectorAll('.image-container');
+            
+            // Actualizar botones activos
+            buttons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (orientation === 'horizontal') {
+                buttons[0].classList.add('active');
+                containers.forEach(container => {
+                    container.classList.remove('vertical');
+                    container.classList.add('horizontal');
+                });
+            } else if (orientation === 'vertical') {
+                buttons[2].classList.add('active');
+                containers.forEach(container => {
+                    container.classList.remove('horizontal');
+                    container.classList.add('vertical');
+                });
+            } else {
+                buttons[1].classList.add('active');
+                containers.forEach(container => {
+                    container.classList.remove('horizontal', 'vertical');
+                });
+            }
+        }
+
         function changeImage(src) {
             if (src) {
                 document.getElementById('mainImage').src = src;
@@ -470,35 +592,34 @@
             html2canvas(element, {
                 scale: 2,
                 useCORS: true,
-                backgroundColor: '#ffffff',
+                backgroundColor: null,
                 logging: false,
                 windowWidth: element.scrollWidth,
                 windowHeight: element.scrollHeight
             }).then(canvas => {
-                // Crear un canvas más grande que incluya el fondo
+                // Crear un canvas final con esquinas redondeadas
                 const finalCanvas = document.createElement('canvas');
                 const ctx = finalCanvas.getContext('2d');
                 
                 // Añadir padding alrededor
                 const padding = 40;
-                const borderRadius = 30;
+                const cardRadius = 20;
+                const bgRadius = 30;
                 finalCanvas.width = canvas.width + (padding * 2);
                 finalCanvas.height = canvas.height + (padding * 2);
                 
                 // Crear un rectángulo redondeado para el fondo
                 ctx.beginPath();
-                ctx.moveTo(borderRadius, 0);
-                ctx.lineTo(finalCanvas.width - borderRadius, 0);
-                ctx.quadraticCurveTo(finalCanvas.width, 0, finalCanvas.width, borderRadius);
-                ctx.lineTo(finalCanvas.width, finalCanvas.height - borderRadius);
-                ctx.quadraticCurveTo(finalCanvas.width, finalCanvas.height, finalCanvas.width - borderRadius, finalCanvas.height);
-                ctx.lineTo(borderRadius, finalCanvas.height);
-                ctx.quadraticCurveTo(0, finalCanvas.height, 0, finalCanvas.height - borderRadius);
-                ctx.lineTo(0, borderRadius);
-                ctx.quadraticCurveTo(0, 0, borderRadius, 0);
+                ctx.moveTo(bgRadius, 0);
+                ctx.lineTo(finalCanvas.width - bgRadius, 0);
+                ctx.quadraticCurveTo(finalCanvas.width, 0, finalCanvas.width, bgRadius);
+                ctx.lineTo(finalCanvas.width, finalCanvas.height - bgRadius);
+                ctx.quadraticCurveTo(finalCanvas.width, finalCanvas.height, finalCanvas.width - bgRadius, finalCanvas.height);
+                ctx.lineTo(bgRadius, finalCanvas.height);
+                ctx.quadraticCurveTo(0, finalCanvas.height, 0, finalCanvas.height - bgRadius);
+                ctx.lineTo(0, bgRadius);
+                ctx.quadraticCurveTo(0, 0, bgRadius, 0);
                 ctx.closePath();
-                
-                // Recortar para que todo lo que dibujemos esté dentro del rectángulo redondeado
                 ctx.clip();
                 
                 // Dibujar el gradiente de fondo
@@ -508,12 +629,38 @@
                 ctx.fillStyle = gradient;
                 ctx.fill();
                 
-                // Dibujar la tarjeta del producto centrada con sombra
+                // Aplicar sombra antes de dibujar la tarjeta
                 ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
                 ctx.shadowBlur = 60;
                 ctx.shadowOffsetX = 0;
                 ctx.shadowOffsetY = 20;
+                
+                // Crear un path redondeado para la tarjeta
+                ctx.beginPath();
+                const x = padding;
+                const y = padding;
+                const width = canvas.width;
+                const height = canvas.height;
+                
+                ctx.moveTo(x + cardRadius, y);
+                ctx.lineTo(x + width - cardRadius, y);
+                ctx.quadraticCurveTo(x + width, y, x + width, y + cardRadius);
+                ctx.lineTo(x + width, y + height - cardRadius);
+                ctx.quadraticCurveTo(x + width, y + height, x + width - cardRadius, y + height);
+                ctx.lineTo(x + cardRadius, y + height);
+                ctx.quadraticCurveTo(x, y + height, x, y + height - cardRadius);
+                ctx.lineTo(x, y + cardRadius);
+                ctx.quadraticCurveTo(x, y, x + cardRadius, y);
+                ctx.closePath();
+                
+                // Guardar el contexto para recortar la imagen
+                ctx.save();
+                ctx.clip();
+                
+                // Dibujar la tarjeta del producto
                 ctx.drawImage(canvas, padding, padding);
+                
+                ctx.restore();
                 
                 // Descargar la imagen
                 const link = document.createElement('a');
@@ -522,6 +669,10 @@
                 link.click();
             });
         }
+
+        // Inicializar en modo 1 imagen y orientación auto
+        toggleImageMode(1);
+        toggleOrientation('auto');
     </script>
 </body>
 </html>
